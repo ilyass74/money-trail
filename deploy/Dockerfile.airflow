@@ -1,0 +1,6 @@
+FROM apache/airflow:3.3.1-python3.12@sha256:b01a795dfbd113bbbfdf3ee169b8f27e9a0090ccef105f1a452b3594a11ed316
+USER root
+RUN mkdir -p /opt/moneytrail-venv /opt/money-trail && chown -R airflow:0 /opt/moneytrail-venv /opt/money-trail
+COPY --chown=airflow:0 . /opt/money-trail
+USER airflow
+RUN python -m venv /opt/moneytrail-venv && /opt/moneytrail-venv/bin/pip install --no-cache-dir -r /opt/money-trail/requirements-dbt.txt

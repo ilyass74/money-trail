@@ -1,0 +1,5 @@
+company_id,source_system,source_id,reference,currency,amount,value_on,booked_on
+DEMO_MA,bank_demo,BQ001,LOT001,MAD,850.00,2026-10-02,2026-10-02
+DEMO_MA,bank_demo,BQ002,LOT002,MAD,880.00,2026-10-02,2026-10-02
+DEMO_MA,bank_demo,BQ003,LOT003,MAD,950.00,2026-10-02,2026-10-02
+DEMO_MA,bank_demo,BQ004,LOT004,MAD,1000.00,2026-10-02,2026-10-02

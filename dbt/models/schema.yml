@@ -1,0 +1,44 @@
+version: 2
+models:
+- name: invoice_reconciliation
+  description: Résultat par snapshot d’import, entreprise, devise et identifiant métier.
+  columns:
+  - name: import_batch_id
+    data_tests:
+    - not_null
+  - name: company_id
+    data_tests:
+    - not_null
+  - name: currency
+    data_tests:
+    - not_null
+  - name: invoice_id
+    data_tests:
+    - not_null
+  - name: status
+    data_tests:
+    - not_null
+  - name: rule_version
+    data_tests:
+    - not_null
+- name: settlement_reconciliation
+  description: Résultat par snapshot d’import, entreprise, devise et identifiant métier.
+  columns:
+  - name: import_batch_id
+    data_tests:
+    - not_null
+  - name: company_id
+    data_tests:
+    - not_null
+  - name: currency
+    data_tests:
+    - not_null
+  - name: batch_id
+    data_tests:
+    - not_null
+  - name: status
+    data_tests:
+    - not_null
+  - name: rule_version
+    data_tests:
+    - not_null

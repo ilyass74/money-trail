@@ -1,0 +1,40 @@
+services:
+  airflow-meta:
+    profiles: [airflow]
+    image: postgres:17.11
+    environment:
+      POSTGRES_DB: airflow_meta
+      POSTGRES_USER: airflow_meta
+      POSTGRES_PASSWORD: ${AIRFLOW_META_PASSWORD:?Generate a distinct AIRFLOW_META_PASSWORD}
+    volumes: [airflow_meta:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U airflow_meta -d airflow_meta]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  airflow:
+    profiles: [airflow]
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.airflow
+    command: standalone
+    env_file: deploy/.env.pipeline
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/money-trail/airflow/dags
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow_meta:${AIRFLOW_META_PASSWORD}@airflow-meta/airflow_meta
+      MT_DB_HOST: postgres
+      MT_DB_PORT: 5432
+    ports: ["127.0.0.1:8081:8080"]
+    volumes:
+      - airflow_home:/opt/airflow
+      - ./data:/opt/money-trail/data
+      - ./reports:/opt/money-trail/reports
+    depends_on:
+      airflow-meta:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+volumes:
+  airflow_meta:
+  airflow_home:

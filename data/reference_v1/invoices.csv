@@ -1,0 +1,2 @@
+company_id,source_system,source_id,order_id,state,currency,total_amount,issued_on,due_on
+DEMO_MA,erp_demo,FAC001,CMD001,posted,MAD,1000.00,2026-09-20,2026-10-20

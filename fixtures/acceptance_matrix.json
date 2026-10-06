@@ -1,0 +1,259 @@
+{
+  "version": "acceptance-v1",
+  "scope": "Contrat synthétique reference-v1, DEMO_MA, MAD, règles v1, instance locale",
+  "criteria": [
+    {
+      "id": "A01",
+      "title": "Facture, périmètre et solde avant échéance",
+      "tests": [
+        "*.test_C01_reference",
+        "*.test_C09_cancelled_invoice",
+        "*.test_C10_future_invoice",
+        "*.test_C47_draft_invoice",
+        "*.test_reject_wrong_company",
+        "*.test_reject_wrong_currency"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A02",
+      "title": "Échéance passée, du jour ou inconnue",
+      "tests": [
+        "*.test_C02_overdue",
+        "*.test_C03_missing_due",
+        "*.test_C04_due_today"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A03",
+      "title": "Avoirs, annulations, remboursement séparé et surpaiement",
+      "tests": [
+        "*.test_C05_credit_settled",
+        "*.test_C06_overpayment",
+        "*.test_C07_cancelled_allocation",
+        "*.test_C08_cancelled_payment",
+        "*.test_C11_credit_eligibility",
+        "*.test_C40_decimal_cents"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A04",
+      "title": "Paiements partagés et agrégations indépendantes",
+      "tests": [
+        "*.test_C12_shared_payment",
+        "*.test_C13_separate_aggregations",
+        "*.test_N09_odoo_lines_do_not_multiply_payment_or_invoice_total"
+      ],
+      "remaining": [
+        "Connecteur Odoo a verifier sur une instance reelle ; les autres rapprochements Odoo (ecritures diverses, conversion FX) bloquent conservativement la couverture."
+      ]
+    },
+    {
+      "id": "A05",
+      "title": "Captures, remboursements, frais, ajustements et limites de dates",
+      "tests": [
+        "*.test_C01_reference",
+        "*.test_C13_separate_aggregations",
+        "*.test_C17_authorization_excluded",
+        "*.test_C18_period_boundaries",
+        "*.test_C24_signed_adjustments",
+        "*.test_C41_capture_at_cutoff",
+        "*.test_C44_refund_on_control_day"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A06",
+      "title": "Écart de -30 MAD, formule, preuves et cause inconnue",
+      "tests": [
+        "*.test_C01_reference",
+        "*.test_D04_closing_case_does_not_remove_financial_discrepancy",
+        "*.test_export_contains_selected_snapshot_amounts_and_sources"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A07",
+      "title": "Inconnu distinct de zéro pour chaque source",
+      "tests": [
+        "*.test_C25_known_zero_fees",
+        "*.test_C26_missing_fees",
+        "*.test_C27_missing_captures",
+        "*.test_C28_missing_refunds",
+        "*.test_C29_missing_adjustments",
+        "*.test_C30_missing_bank_movements",
+        "*.test_C31_missing_bank_allocations",
+        "*.test_C32_missing_credits",
+        "*.test_C33_missing_erp_payments",
+        "*.test_C34_missing_invoice_allocations",
+        "*.test_C35_missing_invoice_coverage",
+        "*.test_C36_unclosed_period"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A08",
+      "title": "Avant/après réception attendue et délai inconnu",
+      "tests": [
+        "*.test_C37_bank_in_transit",
+        "*.test_C38_bank_due_today",
+        "*.test_C39_missing_bank_deadline",
+        "*.test_C45_zero_bank_receipt",
+        "*.test_unknown_bank_deadline_is_displayed_without_claiming_delay"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A09",
+      "title": "Aucune correspondance arbitraire ; devise et identité contrôlées",
+      "tests": [
+        "*.test_C15_no_arbitrary_match",
+        "*.test_C43_no_inferred_invoice_match",
+        "*.test_same_business_id_from_two_sources_is_rejected",
+        "*.test_reject_wrong_currency",
+        "*.test_I07_ambiguous_identity_is_blocked",
+        "*.test_N06_missing_expected_amount_has_no_invented_candidate",
+        "*.test_N12_candidates_rank_reference_before_equal_amount_without_allocating"
+      ],
+      "remaining": [
+        "Finance-v1 traite MAD/EUR/USD/GBP sans conversion entre devises ; recette native multi-entreprises/multi-devises a executer."
+      ]
+    },
+    {
+      "id": "A10",
+      "title": "Réception fractionnée et crédit partagé entre lots",
+      "tests": [
+        "*.test_C14_shared_bank_credit",
+        "*.test_C16_pending_bank_allocation",
+        "*.test_C21_future_booking",
+        "*.test_C22_future_value",
+        "*.test_C23_bank_today",
+        "*.test_I02_bank_overallocated",
+        "*.test_I03_bank_debit"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A11",
+      "title": "Import, build répétés et imports simultanés",
+      "tests": [
+        "*.test_first_import_and_duplicate",
+        "*.test_two_simultaneous_imports_create_one_snapshot",
+        "*.test_D01_reimport_all_cases_is_idempotent",
+        "*.test_D02_rebuild_preserves_values_and_raw_sources",
+        "*.test_P08_second_publisher_is_refused_without_calling_dbt"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A12",
+      "title": "Contrats invalides, transaction annulée et publication refusée",
+      "tests": [
+        "*.test_validation_failure_leaves_no_raw_records",
+        "*.test_partial_database_failure_rolls_back_then_retry_succeeds",
+        "*.test_reject_missing_id",
+        "*.test_reject_nan_amount",
+        "*.test_I01_payment_overallocated",
+        "*.test_I04_refund_over_capture",
+        "*.test_I05_refund_wrong_batch",
+        "*.test_I06_invalid_period",
+        "*.test_I08_failed_build_cannot_be_used_as_evidence",
+        "*.test_P01_failed_build_keeps_last_publication_and_archives",
+        "*.test_P02_running_build_reads_old_version_until_commit",
+        "*.test_P03_new_valid_source_recovers_without_rebuilding_invalid_history",
+        "*.test_P05_error_just_before_commit_rolls_back_every_visible_write",
+        "*.test_P06_source_integrity_failure_cannot_publish",
+        "*.test_P07_failed_import_does_not_hide_published_results",
+        "*.test_P09_interrupted_run_is_audited_and_its_schemas_cleaned",
+        "*.test_failed_calculation_keeps_visible_archived_amounts",
+        "*.test_failed_import_keeps_validated_version_visible",
+        "*.test_N07_failed_extraction_does_not_replace_successful_source",
+        "*.test_N08_quarantined_rows_are_preserved_and_coverage_is_incomplete",
+        "*.test_csv_quarantine_invalid_parent_cascades_and_blocks_coverage",
+        "*.test_csv_hash_mismatch_refuses_whole_file"
+      ],
+      "remaining": [
+        "Extraction Odoo et dependances a verifier sur une instance reelle ; scans de stabilite entre appels JSON-2, sans transaction source globale."
+      ]
+    },
+    {
+      "id": "A13",
+      "title": "Recalcul et conservation des versions de sources et preuves",
+      "tests": [
+        "*.test_D02_rebuild_preserves_values_and_raw_sources",
+        "*.test_D03_late_source_creates_distinct_preserved_snapshots",
+        "*.test_D05_revised_source_does_not_overwrite_historical_case",
+        "*.test_P04_previous_publication_and_workflow_history_are_preserved",
+        "*.test_P10_archive_is_read_without_live_models_or_sources",
+        "*.test_P11_archives_reject_updates_and_artifact_tampering",
+        "*.test_N01_new_rule_changes_status_with_same_amounts_and_sources",
+        "*.test_N02_comparisons_are_archived_and_immutable",
+        "*.test_N04_rules_reject_same_version_with_different_tolerance"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A14",
+      "title": "Rôles, séparation des acteurs et décisions concurrentes",
+      "tests": [
+        "*.test_authenticated_roles_and_actor",
+        "*.test_admin_cannot_approve_or_reject_financial_proposal",
+        "*.test_two_simultaneous_decisions_do_not_overwrite_each_other",
+        "*.test_expired_session_cannot_write",
+        "*.test_deactivated_user_loses_existing_session",
+        "*.test_admin_cannot_decide_another_users_proposal"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A15",
+      "title": "Navigation, filtres, détail et export cohérent",
+      "tests": [
+        "*.test_all_five_pages_render",
+        "*.test_overview_button_opens_the_same_financial_result",
+        "*.test_search_and_workflow_filter_preserve_case_selection",
+        "*.test_export_contains_selected_snapshot_amounts_and_sources",
+        "*.test_P12_authenticated_service_reads_selected_archive",
+        "*.test_two_publications_of_same_snapshot_are_selectable",
+        "*.test_archived_json_values_render_all_pages",
+        "*.test_running_calculation_displays_publication_date"
+      ],
+      "remaining": [
+        "AppTest utilise des services simulés ; le parcours complet navigateur + base réelle, la navigation clavier et la revue visuelle restent à consigner."
+      ]
+    },
+    {
+      "id": "A16",
+      "title": "Sauvegarde et restauration isolée des sources, résultats et historique",
+      "tests": [
+        "*.test_D06_backup_and_restore_in_isolated_database",
+        "*.test_P13_publications_survive_real_backup_and_restore"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "A17",
+      "title": "1 000 / 100 000 commandes et 1 million de transactions",
+      "tests": [
+        "*.test_N05_pages_are_disjoint_ordered_filtered_and_have_full_totals"
+      ],
+      "remaining": [
+        "Benchmark natif des trois niveaux, CPU/RAM serveur et temps de reponse a executer avec scripts/benchmark.py."
+      ]
+    },
+    {
+      "id": "A18",
+      "title": "Sources corrigées et conservation de l’investigation précédente",
+      "tests": [
+        "*.test_D03_late_source_creates_distinct_preserved_snapshots",
+        "*.test_D05_revised_source_does_not_overwrite_historical_case",
+        "*.test_P04_previous_publication_and_workflow_history_are_preserved",
+        "*.test_N03_new_review_keeps_previous_closed_decision_unchanged",
+        "*.test_N11_corrected_source_opens_successor_without_changing_previous_review"
+      ],
+      "remaining": []
+    }
+  ]
+}

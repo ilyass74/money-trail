@@ -1,0 +1,281 @@
+{
+  "contract_version": "reference-v1",
+  "synthetic": true,
+  "company_id": "DEMO_MA",
+  "currency": "MAD",
+  "control_on": "2026-10-05",
+  "files": [
+    {
+      "entity": "orders",
+      "file": "orders.csv",
+      "row_count": 1,
+      "sha256": "6603b86f9f19e151a221fd2ab2929ab89dfd9cd40fe161b7121f527ce099eaa8"
+    },
+    {
+      "entity": "invoices",
+      "file": "invoices.csv",
+      "row_count": 1,
+      "sha256": "9298fce3acb3a7118b1d13d2255231683893be1647494e19fd2eae43cab913c0"
+    },
+    {
+      "entity": "erp_payments",
+      "file": "erp_payments.csv",
+      "row_count": 2,
+      "sha256": "a975ad14c4eb156e1e9b56e62a09d8863e7dbfc27f98ecdad3a00ff9a4e4bfd6"
+    },
+    {
+      "entity": "invoice_allocations",
+      "file": "invoice_allocations.csv",
+      "row_count": 2,
+      "sha256": "d38dfa9b4accbb3f02eb4edc909ec899a6537df8a66ab60e992a20b6545038d5"
+    },
+    {
+      "entity": "credit_notes",
+      "file": "credit_notes.csv",
+      "row_count": 0,
+      "sha256": "5e0a06913b763ac9982eb9499e6aa6a1ce47e560d7e8ae1d83015a0761ee6b31"
+    },
+    {
+      "entity": "settlement_batches",
+      "file": "settlement_batches.csv",
+      "row_count": 4,
+      "sha256": "3ec447055b023ecf1af365f8f097c9cb2f254a4799d8ab2321e019b3f7ca3e55"
+    },
+    {
+      "entity": "processor_payments",
+      "file": "processor_payments.csv",
+      "row_count": 4,
+      "sha256": "e181c0e220073f53d4b8fb726e98460fb7e822e77f20ded56eb98d63e59ce5f4"
+    },
+    {
+      "entity": "refunds",
+      "file": "refunds.csv",
+      "row_count": 2,
+      "sha256": "73ae8d13098da604c6e5e02f92760fd5555371777326dbe6bdd9d3fd8f321113"
+    },
+    {
+      "entity": "fees",
+      "file": "fees.csv",
+      "row_count": 2,
+      "sha256": "6a06e127a555db62383f031516413caf12f8416a2533dd24a4d358425cda7f02"
+    },
+    {
+      "entity": "adjustments",
+      "file": "adjustments.csv",
+      "row_count": 0,
+      "sha256": "8232e0b63f3d1a561e805119e3552890861f3e144dd34fde977c308299933857"
+    },
+    {
+      "entity": "bank_movements",
+      "file": "bank_movements.csv",
+      "row_count": 4,
+      "sha256": "c649857fe2bed19b48775b89220a24756121c85184f61593b3246749d57abf8c"
+    },
+    {
+      "entity": "bank_allocations",
+      "file": "bank_allocations.csv",
+      "row_count": 4,
+      "sha256": "e3f37ffd46fc1cfe4956c17e52999eea84b193f6521cadc807052b4425451c23"
+    }
+  ],
+  "invoice_coverage": {
+    "invoices": true,
+    "erp_payments": true,
+    "invoice_allocations": true,
+    "credit_notes": true
+  },
+  "settlement_coverage": [
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "processor_payments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "refunds",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "fees",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "adjustments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "bank_movements",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT001",
+      "entity": "bank_allocations",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "processor_payments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "refunds",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "fees",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "adjustments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "bank_movements",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT002",
+      "entity": "bank_allocations",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "processor_payments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "refunds",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "fees",
+      "complete": false,
+      "evidence": "source_absente_pour_ce_lot"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "adjustments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "bank_movements",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT003",
+      "entity": "bank_allocations",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "processor_payments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "refunds",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "fees",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "adjustments",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "bank_movements",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    },
+    {
+      "company_id": "DEMO_MA",
+      "currency": "MAD",
+      "batch_id": "LOT004",
+      "entity": "bank_allocations",
+      "complete": true,
+      "evidence": "scenario_synthetique_declare"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+company_id,source_system,source_id,batch_id,state,currency,amount,captured_at
+DEMO_MA,psp_demo,CAP001,LOT001,captured,MAD,1000.00,2026-09-28T10:00:00Z
+DEMO_MA,psp_demo,CAP002,LOT002,captured,MAD,1000.00,2026-09-28T10:00:00Z
+DEMO_MA,psp_demo,CAP003,LOT003,captured,MAD,1000.00,2026-09-28T10:00:00Z
+DEMO_MA,psp_demo,CAP004,LOT004,captured,MAD,1000.00,2026-09-28T10:00:00Z

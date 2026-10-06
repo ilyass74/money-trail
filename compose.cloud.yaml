@@ -1,0 +1,33 @@
+services:
+  ui-cloud:
+    profiles: [cloud]
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.ui
+    env_file: deploy/.env.ui
+    environment:
+      MT_AUTH_MODE: oidc
+      MT_DB_HOST: postgres
+      MT_DB_PORT: 5432
+    volumes:
+      - ./deploy/secrets.toml:/app/.streamlit/secrets.toml:ro
+    expose: [8501]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+  caddy:
+    profiles: [cloud]
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    environment:
+      MT_DOMAIN: ${MT_DOMAIN:?Set MT_DOMAIN in .env}
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [ui-cloud]
+    restart: unless-stopped
+volumes:
+  caddy_data:
+  caddy_config:

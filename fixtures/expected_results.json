@@ -1,0 +1,15 @@
+{
+  "contract_version": "reference-v1",
+  "control_on": "2026-10-05",
+  "company_id": "DEMO_MA",
+  "currency": "MAD",
+  "invoice_results": [
+    {"invoice_id":"FAC001","invoice_amount":"1000.00","allocated_amount":"900.00","credit_amount":"0.00","balance":"100.00","status":"solde_en_attente","rule_refs":["R01","R02","R03","R04"]}
+  ],
+  "settlement_results": [
+    {"batch_id":"LOT001","expected_amount":"880.00","received_amount":"850.00","difference":"-30.00","status":"ecart","cause":"non_identifiee","rule_refs":["R07","R08","R09"]},
+    {"batch_id":"LOT002","expected_amount":"880.00","received_amount":"880.00","difference":"0.00","status":"rapproche","rule_refs":["R07","R08","R09"]},
+    {"batch_id":"LOT003","expected_amount":null,"received_amount":"950.00","difference":null,"status":"calcul_bloque","quality":"donnees_incompletes","missing_source":"fees","rule_refs":["R10"]},
+    {"batch_id":"LOT004","expected_amount":"1000.00","received_amount":"1000.00","difference":"0.00","status":"rapproche","rule_refs":["R09","R10"]}
+  ]
+}

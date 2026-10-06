@@ -1,0 +1,3 @@
+company_id,source_system,source_id,state,currency,amount,paid_at
+DEMO_MA,erp_demo,P001,confirmed,MAD,600.00,2026-09-25T09:00:00Z
+DEMO_MA,erp_demo,P002,confirmed,MAD,300.00,2026-10-01T09:00:00Z

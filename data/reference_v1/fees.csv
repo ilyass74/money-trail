@@ -1,0 +1,3 @@
+company_id,source_system,source_id,batch_id,currency,amount,charged_at
+DEMO_MA,psp_demo,FR001,LOT001,MAD,20.00,2026-09-28T23:00:00Z
+DEMO_MA,psp_demo,FR002,LOT002,MAD,20.00,2026-09-28T23:00:00Z

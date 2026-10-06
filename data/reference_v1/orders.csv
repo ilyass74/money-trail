@@ -1,0 +1,2 @@
+company_id,source_system,source_id,customer_ref,currency,total_amount,ordered_at
+DEMO_MA,erp_demo,CMD001,CLIENT001,MAD,1000.00,2026-09-20T10:00:00Z

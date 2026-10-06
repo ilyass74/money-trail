@@ -1,0 +1,3 @@
+{$MT_DOMAIN} {
+    reverse_proxy ui-cloud:8501
+}

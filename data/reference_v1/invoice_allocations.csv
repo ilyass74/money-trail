@@ -1,0 +1,3 @@
+company_id,source_system,source_id,invoice_id,payment_id,currency,amount,state
+DEMO_MA,erp_demo,A001,FAC001,P001,MAD,600.00,confirmed
+DEMO_MA,erp_demo,A002,FAC001,P002,MAD,300.00,confirmed

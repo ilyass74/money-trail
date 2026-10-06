@@ -1,0 +1,5 @@
+company_id,source_system,source_id,batch_id,movement_id,currency,amount,state
+DEMO_MA,bank_demo,AB001,LOT001,BQ001,MAD,850.00,confirmed
+DEMO_MA,bank_demo,AB002,LOT002,BQ002,MAD,880.00,confirmed
+DEMO_MA,bank_demo,AB003,LOT003,BQ003,MAD,950.00,confirmed
+DEMO_MA,bank_demo,AB004,LOT004,BQ004,MAD,1000.00,confirmed

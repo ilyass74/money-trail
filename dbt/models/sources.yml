@@ -1,0 +1,11 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    tables:
+      - name: source_records
+  - name: meta
+    schema: meta
+    tables:
+      - name: import_batches
+      - name: import_files

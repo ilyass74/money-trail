@@ -1,0 +1,1698 @@
+{
+  "version": "acceptance-v1",
+  "synthetic": true,
+  "expected_values": "manually_authored_not_computed_by_engine",
+  "cases": [
+    {
+      "id": "C01_reference",
+      "title": "Référence : facture et quatre versements",
+      "acceptance": [
+        "A01",
+        "A05",
+        "A06",
+        "A07"
+      ],
+      "patches": [],
+      "expected": {}
+    },
+    {
+      "id": "C02_overdue",
+      "title": "Facture après échéance",
+      "acceptance": [
+        "A02"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "due_on": "2026-10-01"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "status": "en_retard"
+          }
+        }
+      }
+    },
+    {
+      "id": "C03_missing_due",
+      "title": "Échéance de facture inconnue",
+      "acceptance": [
+        "A02"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "due_on": ""
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "status": "echeance_inconnue"
+          }
+        }
+      }
+    },
+    {
+      "id": "C04_due_today",
+      "title": "Le jour de l’échéance ne constitue pas un retard",
+      "acceptance": [
+        "A02"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "due_on": "2026-10-05"
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "C05_credit_settled",
+      "title": "Avoir et paiement ; remboursement PSP indépendant",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV001",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "posted",
+            "amount": "100.00",
+            "issued_on": "2026-10-03"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "credit_amount": "100.00",
+            "balance": "0.00",
+            "status": "soldee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C06_overpayment",
+      "title": "Surpaiement sans surallocation du paiement",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "amount": "450.00"
+          }
+        },
+        {
+          "entity": "invoice_allocations",
+          "id": "A002",
+          "set": {
+            "amount": "450.00"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "1050.00",
+            "balance": "-50.00",
+            "status": "surpaiement"
+          }
+        }
+      }
+    },
+    {
+      "id": "C07_cancelled_allocation",
+      "title": "Affectation annulée exclue",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "invoice_allocations",
+          "id": "A002",
+          "set": {
+            "state": "cancelled"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "600.00",
+            "balance": "400.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C08_cancelled_payment",
+      "title": "Paiement annulé exclu",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "state": "cancelled"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "600.00",
+            "balance": "400.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C09_cancelled_invoice",
+      "title": "Facture annulée exclue du solde actif",
+      "acceptance": [
+        "A01"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "state": "cancelled"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": null
+        }
+      }
+    },
+    {
+      "id": "C10_future_invoice",
+      "title": "Facture postérieure au contrôle exclue",
+      "acceptance": [
+        "A01"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "issued_on": "2026-10-06"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": null
+        }
+      }
+    },
+    {
+      "id": "C11_credit_eligibility",
+      "title": "Seuls les avoirs comptabilisés avant contrôle comptent",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV001",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "posted",
+            "amount": "20.00",
+            "issued_on": "2026-10-05"
+          }
+        },
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV002",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "draft",
+            "amount": "30.00",
+            "issued_on": "2026-10-03"
+          }
+        },
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV003",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "posted",
+            "amount": "40.00",
+            "issued_on": "2026-10-06"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "credit_amount": "20.00",
+            "balance": "80.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C12_shared_payment",
+      "title": "Un paiement partagé et plusieurs paiements par facture",
+      "acceptance": [
+        "A04"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P001",
+          "set": {
+            "amount": "1000.00"
+          }
+        },
+        {
+          "entity": "orders",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "CMD002",
+            "currency": "MAD",
+            "customer_ref": "CLIENT002",
+            "total_amount": "600.00",
+            "ordered_at": "2026-09-20T09:00:00Z"
+          }
+        },
+        {
+          "entity": "invoices",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "FAC002",
+            "currency": "MAD",
+            "order_id": "CMD002",
+            "state": "posted",
+            "total_amount": "600.00",
+            "issued_on": "2026-09-21",
+            "due_on": "2026-10-20"
+          }
+        },
+        {
+          "entity": "erp_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "P003",
+            "currency": "MAD",
+            "state": "confirmed",
+            "amount": "200.00",
+            "paid_at": "2026-10-02T09:00:00Z"
+          }
+        },
+        {
+          "entity": "invoice_allocations",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "A003",
+            "currency": "MAD",
+            "invoice_id": "FAC002",
+            "payment_id": "P001",
+            "amount": "400.00",
+            "state": "confirmed"
+          }
+        },
+        {
+          "entity": "invoice_allocations",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "A004",
+            "currency": "MAD",
+            "invoice_id": "FAC002",
+            "payment_id": "P003",
+            "amount": "200.00",
+            "state": "confirmed"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC002": {
+            "invoice_amount": "600.00",
+            "allocated_amount": "600.00",
+            "credit_amount": "0.00",
+            "balance": "0.00",
+            "status": "soldee",
+            "quality": "complete"
+          }
+        }
+      }
+    },
+    {
+      "id": "C13_separate_aggregations",
+      "title": "Multiples avoirs, frais et remboursements sans multiplication",
+      "acceptance": [
+        "A03",
+        "A04",
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV001",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "posted",
+            "amount": "40.00",
+            "issued_on": "2026-10-03"
+          }
+        },
+        {
+          "entity": "credit_notes",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "AV002",
+            "currency": "MAD",
+            "invoice_id": "FAC001",
+            "state": "posted",
+            "amount": "60.00",
+            "issued_on": "2026-10-03"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "REM003",
+            "currency": "MAD",
+            "batch_id": "LOT002",
+            "payment_id": "CAP002",
+            "amount": "50.00",
+            "refunded_at": "2026-09-28T11:00:00Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FR003",
+            "currency": "MAD",
+            "batch_id": "LOT002",
+            "amount": "10.00",
+            "charged_at": "2026-09-28T11:00:00Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FR004",
+            "currency": "MAD",
+            "batch_id": "LOT002",
+            "amount": "5.00",
+            "charged_at": "2026-09-28T11:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "credit_amount": "100.00",
+            "balance": "0.00",
+            "status": "soldee"
+          }
+        },
+        "settlement": {
+          "LOT002": {
+            "refunded_amount": "150.00",
+            "fees_amount": "35.00",
+            "expected_amount": "815.00",
+            "difference": "65.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C14_shared_bank_credit",
+      "title": "Un crédit partagé ; un lot reçu en deux crédits",
+      "acceptance": [
+        "A10"
+      ],
+      "patches": [
+        {
+          "entity": "bank_movements",
+          "id": "BQ001",
+          "set": {
+            "amount": "1750.00"
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "id": "AB001",
+          "set": {
+            "amount": "500.00"
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "set": {
+            "movement_id": "BQ001"
+          }
+        },
+        {
+          "entity": "bank_movements",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "bank_demo",
+            "source_id": "BQ005",
+            "currency": "MAD",
+            "reference": "LOT001",
+            "amount": "380.00",
+            "value_on": "2026-10-02",
+            "booked_on": "2026-10-02"
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "bank_demo",
+            "source_id": "AB005",
+            "currency": "MAD",
+            "batch_id": "LOT001",
+            "movement_id": "BQ005",
+            "amount": "380.00",
+            "state": "confirmed"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT001": {
+            "received_amount": "880.00",
+            "difference": "0.00",
+            "status": "rapproche",
+            "cause": null
+          }
+        }
+      }
+    },
+    {
+      "id": "C15_no_arbitrary_match",
+      "title": "Deux crédits candidats ; aucune affectation automatique",
+      "acceptance": [
+        "A09"
+      ],
+      "patches": [
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "delete": true
+        },
+        {
+          "entity": "bank_movements",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "bank_demo",
+            "source_id": "BQALT",
+            "currency": "MAD",
+            "reference": "LOT002",
+            "amount": "880.00",
+            "value_on": "2026-10-02",
+            "booked_on": "2026-10-02"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C16_pending_bank_allocation",
+      "title": "Affectation bancaire non confirmée exclue",
+      "acceptance": [
+        "A10"
+      ],
+      "patches": [
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "set": {
+            "state": "pending"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C17_authorization_excluded",
+      "title": "Autorisation non capturée exclue du versement",
+      "acceptance": [
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "processor_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "CAPALT",
+            "currency": "MAD",
+            "batch_id": "LOT002",
+            "state": "authorized",
+            "amount": "500.00",
+            "captured_at": "2026-09-28T11:00:00Z"
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "C18_period_boundaries",
+      "title": "Début inclus, fin exclue, pour les quatre composantes",
+      "acceptance": [
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "processor_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "CAPSTART",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "state": "captured",
+            "amount": "11.00",
+            "captured_at": "2026-09-28T02:00:00+02:00"
+          }
+        },
+        {
+          "entity": "processor_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "CAPEND",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "state": "captured",
+            "amount": "13.00",
+            "captured_at": "2026-09-29T00:00:00Z"
+          }
+        },
+        {
+          "entity": "processor_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "CAPBEFORE",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "state": "captured",
+            "amount": "17.00",
+            "captured_at": "2026-09-27T23:59:59Z"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "RSTART",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "1.00",
+            "payment_id": "CAP004",
+            "refunded_at": "2026-09-28T00:00:00Z"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "REND",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "2.00",
+            "payment_id": "CAP004",
+            "refunded_at": "2026-09-29T00:00:00Z"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "RBEFORE",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "3.00",
+            "payment_id": "CAP004",
+            "refunded_at": "2026-09-27T23:59:59Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FSTART",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "1.00",
+            "charged_at": "2026-09-28T00:00:00Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FEND",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "2.00",
+            "charged_at": "2026-09-29T00:00:00Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FBEFORE",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "3.00",
+            "charged_at": "2026-09-27T23:59:59Z"
+          }
+        },
+        {
+          "entity": "adjustments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "DSTART",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "1.00",
+            "reason": "ajustement_documente",
+            "adjusted_at": "2026-09-28T00:00:00Z"
+          }
+        },
+        {
+          "entity": "adjustments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "DEND",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "2.00",
+            "reason": "ajustement_documente",
+            "adjusted_at": "2026-09-29T00:00:00Z"
+          }
+        },
+        {
+          "entity": "adjustments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "DBEFORE",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "3.00",
+            "reason": "ajustement_documente",
+            "adjusted_at": "2026-09-27T23:59:59Z"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "captured_amount": "1011.00",
+            "refunded_amount": "1.00",
+            "fees_amount": "1.00",
+            "adjustments_amount": "1.00",
+            "expected_amount": "1010.00",
+            "difference": "-10.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C19_utc_cutoff",
+      "title": "Paiement juste avant minuit inclus ; minuit exclu",
+      "acceptance": [
+        "A01"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P001",
+          "set": {
+            "paid_at": "2026-10-05T23:59:59.999999Z"
+          }
+        },
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "paid_at": "2026-10-06T00:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "600.00",
+            "balance": "400.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C20_timezone_cutoff",
+      "title": "Fuseau explicite converti en UTC à la coupure",
+      "acceptance": [
+        "A01"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "paid_at": "2026-10-06T01:59:59+02:00"
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "C21_future_booking",
+      "title": "Comptabilisation bancaire future exclue",
+      "acceptance": [
+        "A10"
+      ],
+      "patches": [
+        {
+          "entity": "bank_movements",
+          "id": "BQ002",
+          "set": {
+            "booked_on": "2026-10-06"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C22_future_value",
+      "title": "Date de valeur bancaire future exclue",
+      "acceptance": [
+        "A10"
+      ],
+      "patches": [
+        {
+          "entity": "bank_movements",
+          "id": "BQ002",
+          "set": {
+            "value_on": "2026-10-06"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C23_bank_today",
+      "title": "Dates bancaires égales à la date de contrôle incluses",
+      "acceptance": [
+        "A10"
+      ],
+      "patches": [
+        {
+          "entity": "bank_movements",
+          "id": "BQ002",
+          "set": {
+            "booked_on": "2026-10-05",
+            "value_on": "2026-10-05"
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "C24_signed_adjustments",
+      "title": "Ajustements documentés positifs et négatifs",
+      "acceptance": [
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "adjustments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "AD001",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "-25.00",
+            "reason": "correction_documentee",
+            "adjusted_at": "2026-09-28T11:00:00Z"
+          }
+        },
+        {
+          "entity": "adjustments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "AD002",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "5.00",
+            "reason": "correction_documentee",
+            "adjusted_at": "2026-09-28T11:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "adjustments_amount": "-20.00",
+            "expected_amount": "980.00",
+            "difference": "20.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C25_known_zero_fees",
+      "title": "Fichier vide couvert : zéro frais confirmé",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT003": {
+            "fees_amount": "0.00",
+            "expected_amount": "1000.00",
+            "difference": "-50.00",
+            "status": "ecart",
+            "quality": "complete",
+            "cause": "non_identifiee"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT003",
+          "entity": "fees",
+          "complete": true
+        }
+      ]
+    },
+    {
+      "id": "C26_missing_fees",
+      "title": "Source incomplète : fees",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "fees_amount": null,
+            "expected_amount": null,
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "fees"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "fees",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C27_missing_captures",
+      "title": "Source incomplète : processor_payments",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "captured_amount": null,
+            "expected_amount": null,
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "processor_payments"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "processor_payments",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C28_missing_refunds",
+      "title": "Source incomplète : refunds",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "refunded_amount": null,
+            "expected_amount": null,
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "refunds"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "refunds",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C29_missing_adjustments",
+      "title": "Source incomplète : adjustments",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "adjustments_amount": null,
+            "expected_amount": null,
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "adjustments"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "adjustments",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C30_missing_bank_movements",
+      "title": "Source incomplète : bank_movements",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "received_amount": null,
+            "expected_amount": "1000.00",
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "bank_movements"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "bank_movements",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C31_missing_bank_allocations",
+      "title": "Source incomplète : bank_allocations",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "received_amount": null,
+            "expected_amount": "1000.00",
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "missing_source": "bank_allocations"
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT004",
+          "entity": "bank_allocations",
+          "complete": false
+        }
+      ]
+    },
+    {
+      "id": "C32_missing_credits",
+      "title": "Couverture facture incomplète : credit_notes",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "balance": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "credit_amount": null
+          }
+        }
+      },
+      "invoice_coverage": {
+        "credit_notes": false
+      }
+    },
+    {
+      "id": "C33_missing_erp_payments",
+      "title": "Couverture facture incomplète : erp_payments",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "balance": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "allocated_amount": null
+          }
+        }
+      },
+      "invoice_coverage": {
+        "erp_payments": false
+      }
+    },
+    {
+      "id": "C34_missing_invoice_allocations",
+      "title": "Couverture facture incomplète : invoice_allocations",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "balance": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes",
+            "allocated_amount": null
+          }
+        }
+      },
+      "invoice_coverage": {
+        "invoice_allocations": false
+      }
+    },
+    {
+      "id": "C35_missing_invoice_coverage",
+      "title": "Couverture facture incomplète : invoices",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "balance": null,
+            "status": "calcul_bloque",
+            "quality": "donnees_incompletes"
+          }
+        }
+      },
+      "invoice_coverage": {
+        "invoices": false
+      }
+    },
+    {
+      "id": "C36_unclosed_period",
+      "title": "Période de versement non close : calcul bloqué",
+      "acceptance": [
+        "A07"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT004",
+          "set": {
+            "period_end": "2026-10-07T00:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "expected_amount": null,
+            "difference": null,
+            "status": "calcul_bloque",
+            "quality": "periode_non_close"
+          }
+        }
+      }
+    },
+    {
+      "id": "C37_bank_in_transit",
+      "title": "Réception avant délai : en attente",
+      "acceptance": [
+        "A08"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT002",
+          "set": {
+            "expected_receipt_on": "2026-10-07"
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "delete": true
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "versement_en_attente",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C38_bank_due_today",
+      "title": "Le jour de réception prévu reste en attente",
+      "acceptance": [
+        "A08"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT002",
+          "set": {
+            "expected_receipt_on": "2026-10-05"
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "delete": true
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "versement_en_attente",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C39_missing_bank_deadline",
+      "title": "Délai inconnu : aucune conclusion de retard",
+      "acceptance": [
+        "A08"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT002",
+          "set": {
+            "expected_receipt_on": ""
+          }
+        },
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "delete": true
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "delai_a_confirmer",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C40_decimal_cents",
+      "title": "Exactitude au centime : 0,10 + 0,20",
+      "acceptance": [
+        "A03",
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "orders",
+          "id": "CMD001",
+          "set": {
+            "total_amount": "0.30"
+          }
+        },
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "total_amount": "0.30"
+          }
+        },
+        {
+          "entity": "erp_payments",
+          "id": "P001",
+          "set": {
+            "amount": "0.10"
+          }
+        },
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "amount": "0.20"
+          }
+        },
+        {
+          "entity": "invoice_allocations",
+          "id": "A001",
+          "set": {
+            "amount": "0.10"
+          }
+        },
+        {
+          "entity": "invoice_allocations",
+          "id": "A002",
+          "set": {
+            "amount": "0.20"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FR003",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "0.10",
+            "charged_at": "2026-09-28T11:00:00Z"
+          }
+        },
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FR004",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "amount": "0.20",
+            "charged_at": "2026-09-28T11:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "invoice_amount": "0.30",
+            "allocated_amount": "0.30",
+            "balance": "0.00",
+            "status": "soldee"
+          }
+        },
+        "settlement": {
+          "LOT004": {
+            "fees_amount": "0.30",
+            "expected_amount": "999.70",
+            "difference": "0.30",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C41_capture_at_cutoff",
+      "title": "Capture à minuit exclue et juste avant incluse",
+      "acceptance": [
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT004",
+          "set": {
+            "period_start": "2026-10-05T00:00:00Z",
+            "period_end": "2026-10-06T00:00:00Z"
+          }
+        },
+        {
+          "entity": "processor_payments",
+          "id": "CAP004",
+          "set": {
+            "captured_at": "2026-10-05T23:59:59.999999Z"
+          }
+        },
+        {
+          "entity": "processor_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "CAPEND",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "state": "captured",
+            "amount": "13.00",
+            "captured_at": "2026-10-06T00:00:00Z"
+          }
+        }
+      ],
+      "expected": {}
+    },
+    {
+      "id": "C42_late_fees_received",
+      "title": "Source de frais reçue tardivement : nouveau snapshot",
+      "acceptance": [
+        "A07",
+        "A13",
+        "A18"
+      ],
+      "patches": [
+        {
+          "entity": "fees",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "FRLATE",
+            "currency": "MAD",
+            "batch_id": "LOT003",
+            "amount": "50.00",
+            "charged_at": "2026-09-28T11:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT003": {
+            "fees_amount": "50.00",
+            "expected_amount": "950.00",
+            "difference": "0.00",
+            "status": "rapproche",
+            "quality": "complete",
+            "cause": null
+          }
+        }
+      },
+      "settlement_coverage": [
+        {
+          "batch_id": "LOT003",
+          "entity": "fees",
+          "complete": true
+        }
+      ]
+    },
+    {
+      "id": "C43_no_inferred_invoice_match",
+      "title": "Paiement non affecté : aucun règlement inventé",
+      "acceptance": [
+        "A09"
+      ],
+      "patches": [
+        {
+          "entity": "invoice_allocations",
+          "id": "A002",
+          "delete": true
+        },
+        {
+          "entity": "erp_payments",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "erp_demo",
+            "source_id": "PALT",
+            "currency": "MAD",
+            "state": "confirmed",
+            "amount": "300.00",
+            "paid_at": "2026-10-02T09:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "600.00",
+            "balance": "400.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C44_refund_on_control_day",
+      "title": "Remboursement du jour de contrôle : inclus",
+      "acceptance": [
+        "A05"
+      ],
+      "patches": [
+        {
+          "entity": "settlement_batches",
+          "id": "LOT004",
+          "set": {
+            "period_start": "2026-10-05T00:00:00Z",
+            "period_end": "2026-10-06T00:00:00Z"
+          }
+        },
+        {
+          "entity": "processor_payments",
+          "id": "CAP004",
+          "set": {
+            "captured_at": "2026-10-05T09:00:00Z"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "RFTODAY",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "payment_id": "CAP004",
+            "amount": "10.00",
+            "refunded_at": "2026-10-05T23:59:59Z"
+          }
+        },
+        {
+          "entity": "refunds",
+          "append": {
+            "company_id": "DEMO_MA",
+            "source_system": "psp_demo",
+            "source_id": "RFFUTURE",
+            "currency": "MAD",
+            "batch_id": "LOT004",
+            "payment_id": "CAP004",
+            "amount": "20.00",
+            "refunded_at": "2026-10-06T00:00:00Z"
+          }
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT004": {
+            "refunded_amount": "10.00",
+            "expected_amount": "990.00",
+            "difference": "10.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C45_zero_bank_receipt",
+      "title": "Absence couverte de réception : reçu zéro",
+      "acceptance": [
+        "A08"
+      ],
+      "patches": [
+        {
+          "entity": "bank_allocations",
+          "id": "AB002",
+          "delete": true
+        }
+      ],
+      "expected": {
+        "settlement": {
+          "LOT002": {
+            "received_amount": "0.00",
+            "difference": "-880.00",
+            "status": "ecart",
+            "cause": "non_identifiee"
+          }
+        }
+      }
+    },
+    {
+      "id": "C46_pending_erp_payment",
+      "title": "Paiement ERP en attente exclu",
+      "acceptance": [
+        "A03"
+      ],
+      "patches": [
+        {
+          "entity": "erp_payments",
+          "id": "P002",
+          "set": {
+            "state": "pending"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": {
+            "allocated_amount": "600.00",
+            "balance": "400.00"
+          }
+        }
+      }
+    },
+    {
+      "id": "C47_draft_invoice",
+      "title": "Facture non comptabilisée exclue",
+      "acceptance": [
+        "A01"
+      ],
+      "patches": [
+        {
+          "entity": "invoices",
+          "id": "FAC001",
+          "set": {
+            "state": "draft"
+          }
+        }
+      ],
+      "expected": {
+        "invoice": {
+          "FAC001": null
+        }
+      }
+    }
+  ]
+}

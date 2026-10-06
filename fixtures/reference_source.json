@@ -1,0 +1,50 @@
+{
+  "orders": [
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"CMD001","customer_ref":"CLIENT001","currency":"MAD","total_amount":"1000.00","ordered_at":"2026-09-20T10:00:00Z"}
+  ],
+  "invoices": [
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"FAC001","order_id":"CMD001","state":"posted","currency":"MAD","total_amount":"1000.00","issued_on":"2026-09-20","due_on":"2026-10-20"}
+  ],
+  "erp_payments": [
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"P001","state":"confirmed","currency":"MAD","amount":"600.00","paid_at":"2026-09-25T09:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"P002","state":"confirmed","currency":"MAD","amount":"300.00","paid_at":"2026-10-01T09:00:00Z"}
+  ],
+  "invoice_allocations": [
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"A001","invoice_id":"FAC001","payment_id":"P001","currency":"MAD","amount":"600.00","state":"confirmed"},
+    {"company_id":"DEMO_MA","source_system":"erp_demo","source_id":"A002","invoice_id":"FAC001","payment_id":"P002","currency":"MAD","amount":"300.00","state":"confirmed"}
+  ],
+  "credit_notes": [],
+  "settlement_batches": [
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"LOT001","currency":"MAD","period_start":"2026-09-28T00:00:00Z","period_end":"2026-09-29T00:00:00Z","expected_receipt_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"LOT002","currency":"MAD","period_start":"2026-09-28T00:00:00Z","period_end":"2026-09-29T00:00:00Z","expected_receipt_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"LOT003","currency":"MAD","period_start":"2026-09-28T00:00:00Z","period_end":"2026-09-29T00:00:00Z","expected_receipt_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"LOT004","currency":"MAD","period_start":"2026-09-28T00:00:00Z","period_end":"2026-09-29T00:00:00Z","expected_receipt_on":"2026-10-02"}
+  ],
+  "processor_payments": [
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"CAP001","batch_id":"LOT001","state":"captured","currency":"MAD","amount":"1000.00","captured_at":"2026-09-28T10:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"CAP002","batch_id":"LOT002","state":"captured","currency":"MAD","amount":"1000.00","captured_at":"2026-09-28T10:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"CAP003","batch_id":"LOT003","state":"captured","currency":"MAD","amount":"1000.00","captured_at":"2026-09-28T10:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"CAP004","batch_id":"LOT004","state":"captured","currency":"MAD","amount":"1000.00","captured_at":"2026-09-28T10:00:00Z"}
+  ],
+  "refunds": [
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"REM001","batch_id":"LOT001","payment_id":"CAP001","currency":"MAD","amount":"100.00","refunded_at":"2026-09-28T12:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"REM002","batch_id":"LOT002","payment_id":"CAP002","currency":"MAD","amount":"100.00","refunded_at":"2026-09-28T12:00:00Z"}
+  ],
+  "fees": [
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"FR001","batch_id":"LOT001","currency":"MAD","amount":"20.00","charged_at":"2026-09-28T23:00:00Z"},
+    {"company_id":"DEMO_MA","source_system":"psp_demo","source_id":"FR002","batch_id":"LOT002","currency":"MAD","amount":"20.00","charged_at":"2026-09-28T23:00:00Z"}
+  ],
+  "adjustments": [],
+  "bank_movements": [
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"BQ001","reference":"LOT001","currency":"MAD","amount":"850.00","value_on":"2026-10-02","booked_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"BQ002","reference":"LOT002","currency":"MAD","amount":"880.00","value_on":"2026-10-02","booked_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"BQ003","reference":"LOT003","currency":"MAD","amount":"950.00","value_on":"2026-10-02","booked_on":"2026-10-02"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"BQ004","reference":"LOT004","currency":"MAD","amount":"1000.00","value_on":"2026-10-02","booked_on":"2026-10-02"}
+  ],
+  "bank_allocations": [
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"AB001","batch_id":"LOT001","movement_id":"BQ001","currency":"MAD","amount":"850.00","state":"confirmed"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"AB002","batch_id":"LOT002","movement_id":"BQ002","currency":"MAD","amount":"880.00","state":"confirmed"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"AB003","batch_id":"LOT003","movement_id":"BQ003","currency":"MAD","amount":"950.00","state":"confirmed"},
+    {"company_id":"DEMO_MA","source_system":"bank_demo","source_id":"AB004","batch_id":"LOT004","movement_id":"BQ004","currency":"MAD","amount":"1000.00","state":"confirmed"}
+  ]
+}
